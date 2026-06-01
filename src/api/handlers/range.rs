@@ -9,7 +9,6 @@ use crate::api::models::response::{RangeItem, RangeResponse, RequestMeta};
 use crate::services::prayer_service;
 use crate::AppState;
 
-// ✅ FIX: Import formatter from the library crate, not `crate::`
 use prayer_times_calculator::formatter;
 
 pub async fn get_prayer_times_range(
