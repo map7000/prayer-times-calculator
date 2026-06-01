@@ -31,7 +31,24 @@ pub fn resolve_method(method: Option<&str>) -> prayer_times_calculator::Params {
     }
 }
 
-pub fn calculate_from_query(params: PrayerQueryParams) -> Result<(Times, String, (f64, f64), f64), AppError> {
+pub fn calculate_from_query(
+    mut params: PrayerQueryParams, 
+    requested_date: NaiveDate // <-- Accept NaiveDate directly
+) -> Result<(Times, String, (f64, f64), f64), AppError> {
+    
+    // Validate coordinates
+    if params.lat < -90.0 || params.lat > 90.0 {
+        return Err(AppError::BadRequest("Latitude must be between -90 and 90".into()));
+    }
+    if params.lng < -180.0 || params.lng > 180.0 {
+        return Err(AppError::BadRequest("Longitude must be between -180 and 180".into()));
+    }
+
+    // Extract year, month, day safely from the already-validated NaiveDate
+    let year = requested_date.year();
+    let month = requested_date.month();
+    let day = requested_date.day();
+
     if !(-90.0..=90.0).contains(&params.lat) {
         return Err(AppError::BadRequest("Latitude must be between -90 and 90".into()));
     }
@@ -51,8 +68,11 @@ pub fn calculate_from_query(params: PrayerQueryParams) -> Result<(Times, String,
         ));
     }
 
-    let method_name = params.method.clone().unwrap_or_else(|| "isna".into());
-    let timezone = params.timezone.unwrap_or(0.0);
+    let resolved_date = NaiveDate::from_ymd_opt(year, month, day)
+        .ok_or_else(|| AppError::InvalidDate(
+            "Invalid date".into(),
+            format!("{}-{:02}-{:02} is not a valid date", year, month, day),
+        ))?;
 
     let request = CalculationRequest {
         year, month, day,
@@ -67,7 +87,10 @@ pub fn calculate_from_query(params: PrayerQueryParams) -> Result<(Times, String,
     let times = PrayerCalculator::calculate(&request)
         .map_err(|e| AppError::Calculation(e.to_string()))?;
 
-    Ok((times, method_name, (params.lat, params.lng), timezone))
+    let method_name = params.method.unwrap_or_else(|| "mwl".into());
+    let tz = params.timezone.unwrap_or(0.0);
+
+    Ok((times, method_name, (params.lat, params.lng), tz))
 }
 
 pub fn calculate_from_request(req: &CalculationRequest) -> Result<Times, AppError> {

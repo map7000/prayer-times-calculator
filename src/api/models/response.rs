@@ -1,11 +1,35 @@
-use serde::Serialize;
+use crate::formatter;
 use prayer_times_calculator::Times;
+use serde::Serialize;
 
 #[derive(Serialize)]
-pub struct PrayerTimesResponse {
-    pub status: String,
-    pub data: Times,
-    pub request: RequestMeta,
+pub struct FormattedTimes {
+    pub imsak: String,
+    pub fajr: String,
+    pub sunrise: String,
+    pub dhuhr: String,
+    pub asr: String,
+    pub sunset: String,
+    pub maghrib: String,
+    pub isha: String,
+    pub midnight: String,
+}
+
+// This enables the `times.into()` call in the handler
+impl From<Times> for FormattedTimes {
+    fn from(t: Times) -> Self {
+        Self {
+            imsak: formatter::format_time(t.imsak, true),
+            fajr: formatter::format_time(t.fajr, true),
+            sunrise: formatter::format_time(t.sunrise, true),
+            dhuhr: formatter::format_time(t.dhuhr, true),
+            asr: formatter::format_time(t.asr, true),
+            sunset: formatter::format_time(t.sunset, true),
+            maghrib: formatter::format_time(t.maghrib, true),
+            isha: formatter::format_time(t.isha, true),
+            midnight: formatter::format_time(t.midnight, true),
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -19,33 +43,26 @@ pub struct RequestMeta {
 }
 
 #[derive(Serialize)]
-pub struct RangeResponse {
+pub struct PrayerTimesResponse {
     pub status: String,
-    pub count: usize,
-    pub data: Vec<RangeItem>,
+    pub data: FormattedTimes,
+    pub request: RequestMeta,
 }
 
 #[derive(Serialize)]
 pub struct RangeItem {
     pub date: String,
-    pub times: RangeTimes,
+    pub fajr: String,
+    pub sunrise: String,
+    pub dhuhr: String,
+    pub asr: String,
+    pub maghrib: String,
+    pub isha: String,
 }
 
 #[derive(Serialize)]
-pub struct RangeTimes {
-    pub fajr: f64,
-    pub sunrise: f64,
-    pub dhuhr: f64,
-    pub asr: f64,
-    pub maghrib: f64,
-    pub isha: f64,
-}
-
-impl From<Times> for RangeTimes {
-    fn from(t: Times) -> Self {
-        Self {
-            fajr: t.fajr, sunrise: t.sunrise, dhuhr: t.dhuhr,
-            asr: t.asr, maghrib: t.maghrib, isha: t.isha,
-        }
-    }
+pub struct RangeResponse {
+    pub status: String,
+    pub data: Vec<RangeItem>,
+    pub request: RequestMeta,
 }
