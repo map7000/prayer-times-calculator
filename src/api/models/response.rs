@@ -15,7 +15,6 @@ pub struct FormattedTimes {
     pub midnight: String,
 }
 
-// This enables the `times.into()` call in the handler
 impl From<Times> for FormattedTimes {
     fn from(t: Times) -> Self {
         Self {

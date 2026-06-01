@@ -1,4 +1,7 @@
-use axum::{http::StatusCode, response::{IntoResponse, Response, Json}};
+use axum::{
+    http::StatusCode,
+    response::{IntoResponse, Json, Response},
+};
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -19,14 +22,20 @@ impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error, details) = match self {
             AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg, None),
-            AppError::InvalidDate(msg, det) => (StatusCode::UNPROCESSABLE_ENTITY, msg, Some(det)), // 422
-            AppError::Calculation(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg, None), // 500
+            AppError::InvalidDate(msg, det) => {
+                (StatusCode::UNPROCESSABLE_ENTITY, msg, Some(det))
+            }
+            AppError::Calculation(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg, None),
         };
-        
-        (status, Json(ApiErrorBody {
-            status: "error".into(),
-            error,
-            details,
-        })).into_response()
+
+        (
+            status,
+            Json(ApiErrorBody {
+                status: "error".into(),
+                error,
+                details,
+            }),
+        )
+            .into_response()
     }
 }
