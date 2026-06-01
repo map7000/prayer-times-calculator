@@ -1,17 +1,18 @@
-use axum::{extract::{Query, State, Json}, http::StatusCode, response::IntoResponse};
+use axum::{extract::{Query, State, Json}, response::IntoResponse};
 use prayer_times_calculator::CalculationRequest;
 use crate::api::models::request::{PrayerQueryParams, RangeRequest};
 use crate::api::models::response::{PrayerTimesResponse, RequestMeta, RangeResponse, RangeItem};
 use crate::api::error::AppError;
 use crate::services::prayer_service;
 use crate::AppState;
+use chrono::Datelike;
 
 pub async fn post_prayer_times(
     State(_): State<AppState>,
     Json(req): Json<CalculationRequest>,
 ) -> Result<impl IntoResponse, AppError> {
-    let times = prayer_service::calculate_from_request(req)?;
-    Ok((StatusCode::OK, Json(PrayerTimesResponse {
+    let times = prayer_service::calculate_from_request(&req)?;
+    Ok(Json(PrayerTimesResponse {
         status: "success".into(),
         data: times,
         request: RequestMeta {
@@ -20,7 +21,7 @@ pub async fn post_prayer_times(
             method: None,
             timezone: None,
         },
-    })))
+    }))
 }
 
 pub async fn get_prayer_times(
@@ -28,7 +29,7 @@ pub async fn get_prayer_times(
     Query(params): Query<PrayerQueryParams>,
 ) -> Result<impl IntoResponse, AppError> {
     let (times, method, coords, tz) = prayer_service::calculate_from_query(params)?;
-    Ok((StatusCode::OK, Json(PrayerTimesResponse {
+    Ok(Json(PrayerTimesResponse {
         status: "success".into(),
         data: times,
         request: RequestMeta {
@@ -38,7 +39,7 @@ pub async fn get_prayer_times(
             method: Some(method),
             timezone: Some(tz),
         },
-    })))
+    }))
 }
 
 pub async fn post_prayer_times_range(
@@ -51,9 +52,9 @@ pub async fn post_prayer_times_range(
         times: times.into(),
     }).collect();
 
-    Ok((StatusCode::OK, Json(RangeResponse {
+    Ok(Json(RangeResponse {
         status: "success".into(),
         count: data.len(),
         data,
-    })))
+    }))
 }

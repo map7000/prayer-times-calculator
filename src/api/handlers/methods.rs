@@ -1,5 +1,4 @@
-use axum::response::IntoResponse;
-use serde_json::json;
+use axum::{response::IntoResponse, Json};
 
 pub async fn get_methods() -> impl IntoResponse {
     let methods = serde_json::json!({
@@ -151,5 +150,5 @@ pub async fn get_methods() -> impl IntoResponse {
         "usage_note": "Use the 'method' query parameter with any of these names (e.g., ?method=isna)"
     });
     
-    (StatusCode::OK, Json(methods))
+    Json(methods)
 }

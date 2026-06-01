@@ -70,8 +70,8 @@ pub fn calculate_from_query(params: PrayerQueryParams) -> Result<(Times, String,
     Ok((times, method_name, (params.lat, params.lng), timezone))
 }
 
-pub fn calculate_from_request(req: CalculationRequest) -> Result<Times, AppError> {
-    PrayerCalculator::calculate(&req)
+pub fn calculate_from_request(req: &CalculationRequest) -> Result<Times, AppError> {
+    PrayerCalculator::calculate(req)
         .map_err(|e| AppError::Calculation(e.to_string()))
 }
 
@@ -96,7 +96,7 @@ pub fn calculate_range(req: RangeRequest) -> Result<Vec<(DateComponents, Times)>
             settings: req.settings.clone(),
             offsets: req.offsets,
         };
-        let times = calculate_from_request(calc_req)?;
+        let times = calculate_from_request(&calc_req)?;
         results.push((DateComponents { year: current.year(), month: current.month(), day: current.day() }, times));
         current = current.succ_opt().unwrap_or(current);
     }
