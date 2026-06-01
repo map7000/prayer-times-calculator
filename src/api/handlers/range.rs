@@ -2,14 +2,15 @@ use axum::{
     extract::{Query, State},
     Json,
 };
-use chrono::NaiveDate;
 
 use crate::api::error::AppError;
-use crate::api::models::request::RangeRequest;
+use crate::api::models::request::{PrayerQueryParams, RangeRequest};
 use crate::api::models::response::{RangeItem, RangeResponse, RequestMeta};
 use crate::services::prayer_service;
 use crate::AppState;
-use crate::api::models::request::PrayerQueryParams;
+
+// ✅ FIX: Import formatter from the library crate, not `crate::`
+use prayer_times_calculator::formatter;
 
 pub async fn get_prayer_times_range(
     State(_state): State<AppState>,
@@ -39,14 +40,16 @@ pub async fn get_prayer_times_range(
 
         data.push(RangeItem {
             date: current.to_string(),
-            fajr: crate::formatter::format_time(times.fajr, true),
-            sunrise: crate::formatter::format_time(times.sunrise, true),
-            dhuhr: crate::formatter::format_time(times.dhuhr, true),
-            asr: crate::formatter::format_time(times.asr, true),
-            maghrib: crate::formatter::format_time(times.maghrib, true),
-            isha: crate::formatter::format_time(times.isha, true),
+            // ✅ FIX: Use the imported `formatter` directly
+            fajr: formatter::format_time(times.fajr, true),
+            sunrise: formatter::format_time(times.sunrise, true),
+            dhuhr: formatter::format_time(times.dhuhr, true),
+            asr: formatter::format_time(times.asr, true),
+            maghrib: formatter::format_time(times.maghrib, true),
+            isha: formatter::format_time(times.isha, true),
         });
 
+        // Safely increment the date by 1 day
         current = current.succ_opt().unwrap_or(current);
     }
 

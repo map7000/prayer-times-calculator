@@ -1,6 +1,7 @@
 pub mod health;
 pub mod methods;
 pub mod prayer_times;
+pub mod range;
 
 // pub use health::health_check;
 // pub use methods::get_methods;

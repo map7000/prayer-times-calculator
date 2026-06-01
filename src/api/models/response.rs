@@ -1,5 +1,4 @@
-use crate::formatter;
-use prayer_times_calculator::Times;
+use prayer_times_calculator::{formatter, Times};
 use serde::Serialize;
 
 #[derive(Serialize)]
