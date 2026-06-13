@@ -3,6 +3,15 @@ name = "prayer-times-calculator"
 version = "0.1.0"
 edition = "2021"
 
+license = "LGPL-3.0"
+description = "A high-performance Rust prayer times calculator and REST API based on PrayTimes.js algorithms."
+homepage = "https://github.com/map7000/prayer-times-calculator"
+repository = "https://github.com/map7000/prayer-times-calculator"
+readme = "README.md"
+
+keywords = ["prayer-times", "salah", "islam", "muslim", "calculator"]
+categories = ["algorithms", "date-and-time"]
+
 [dependencies]
 axum = "0.7"
 tokio = { version = "1", features = ["full"] }
