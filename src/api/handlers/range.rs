@@ -34,8 +34,7 @@ pub async fn get_prayer_times_range(
             timezone: params.timezone,
         };
 
-        let (times, _, _, _) =
-            prayer_service::calculate_from_query(day_params, current)?;
+        let (times, _, _, _) = prayer_service::calculate_from_query(day_params, current)?;
 
         data.push(RangeItem {
             date: current.to_string(),

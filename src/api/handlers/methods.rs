@@ -149,6 +149,6 @@ pub async fn get_methods() -> impl IntoResponse {
         },
         "usage_note": "Use the 'method' query parameter with any of these names (e.g., ?method=isna)"
     });
-    
+
     Json(methods)
 }

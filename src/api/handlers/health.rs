@@ -5,6 +5,6 @@ pub async fn health_check() -> impl IntoResponse {
     Json(json!({
         "status": "healthy",
         "service": "prayer-times-api",
-        "version": "0.1.0"
+        "version": env!("CARGO_PKG_VERSION")
     }))
 }

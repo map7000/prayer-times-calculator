@@ -19,3 +19,13 @@ pub struct RangeRequest {
     pub method: Option<String>,
     pub timezone: Option<f64>,
 }
+
+#[derive(Deserialize, Debug)]
+pub struct QiblaQueryParams {
+    pub latitude: f64,
+    pub longitude: f64,
+    /// Height above the WGS-84 ellipsoid in metres (default 0).
+    pub altitude_m: Option<f64>,
+    /// Evaluation date for the magnetic model (defaults to today).
+    pub date: Option<NaiveDate>,
+}
