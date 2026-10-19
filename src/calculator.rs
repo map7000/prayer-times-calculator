@@ -82,7 +82,11 @@ impl CalcContext {
         let cos_ha = (-dmath::sin_deg(angle) - dmath::sin_deg(decl) * dmath::sin_deg(self.lat))
             / (dmath::cos_deg(decl) * dmath::cos_deg(self.lat));
         let t = (1.0 / 15.0) * dmath::arccos_deg(cos_ha.clamp(-1.0, 1.0));
-        if ccw { noon - t } else { noon + t }
+        if ccw {
+            noon - t
+        } else {
+            noon + t
+        }
     }
 
     fn asr_time(&self, factor: f64, time: f64) -> f64 {
@@ -201,7 +205,11 @@ impl CalcContext {
             self.time_diff(base, time)
         };
         if time.is_nan() || diff > portion {
-            if ccw { base - portion } else { base + portion }
+            if ccw {
+                base - portion
+            } else {
+                base + portion
+            }
         } else {
             time
         }

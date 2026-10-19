@@ -22,9 +22,7 @@ impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error, details) = match self {
             AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg, None),
-            AppError::InvalidDate(msg, det) => {
-                (StatusCode::UNPROCESSABLE_ENTITY, msg, Some(det))
-            }
+            AppError::InvalidDate(msg, det) => (StatusCode::UNPROCESSABLE_ENTITY, msg, Some(det)),
             AppError::Calculation(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg, None),
         };
 

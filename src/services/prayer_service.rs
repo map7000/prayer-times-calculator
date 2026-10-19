@@ -24,8 +24,11 @@ pub fn calculate_from_query(
     }
 
     // Normalize method name and map it to the correct Params preset
-    let method_name = params.method.unwrap_or_else(|| "MWL".to_string()).to_lowercase();
-    
+    let method_name = params
+        .method
+        .unwrap_or_else(|| "MWL".to_string())
+        .to_lowercase();
+
     let method_params = match method_name.as_str() {
         "mwl" => methods::mwl(),
         "isna" => methods::isna(),
@@ -66,8 +69,8 @@ pub fn calculate_from_query(
     };
 
     // Execute calculation
-    let times = PrayerCalculator::calculate(&req)
-        .map_err(|e| AppError::Calculation(e.to_string()))?;
+    let times =
+        PrayerCalculator::calculate(&req).map_err(|e| AppError::Calculation(e.to_string()))?;
 
     Ok((times, method_name, (params.lat, params.lng), req.timezone))
 }

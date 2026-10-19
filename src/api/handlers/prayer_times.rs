@@ -16,8 +16,7 @@ pub async fn get_prayer_times(
 ) -> Result<Json<PrayerTimesResponse>, AppError> {
     let requested_date = params.date.unwrap_or_else(|| Local::now().date_naive());
 
-    let (times, method, coords, tz) =
-        prayer_service::calculate_from_query(params, requested_date)?;
+    let (times, method, coords, tz) = prayer_service::calculate_from_query(params, requested_date)?;
 
     Ok(Json(PrayerTimesResponse {
         status: "success".into(),

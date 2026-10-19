@@ -1,4 +1,4 @@
-use prayer_times_calculator::{formatter, Times};
+use prayer_times_calculator::{formatter, qibla::Cardinal, Times};
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -62,5 +62,22 @@ pub struct RangeItem {
 pub struct RangeResponse {
     pub status: String,
     pub data: Vec<RangeItem>,
+    pub request: RequestMeta,
+}
+
+#[derive(Serialize)]
+pub struct QiblaData {
+    pub true_bearing_degrees: f64,
+    pub magnetic_bearing_degrees: f64,
+    pub magnetic_declination_degrees: f64,
+    /// Compass point derived from the true bearing (see `Cardinal`).
+    pub true_cardinal_direction: Cardinal,
+    pub distance_km: f64,
+}
+
+#[derive(Serialize)]
+pub struct QiblaResponse {
+    pub status: String,
+    pub data: QiblaData,
     pub request: RequestMeta,
 }
